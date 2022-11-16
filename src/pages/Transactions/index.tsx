@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { Header } from "../../components/Header";
 import { Summary } from "../../components/Summary";
 import { TransactionContext } from "../../contexts/TransactionContext";
+import { dateFormatter, priceFormatter } from "../../utils/formatter";
 import SearchForm from "./SearchForm";
 import {
   PriceHightLight,
@@ -27,11 +28,14 @@ export function Transactions() {
                   <td width="50%">{transaction.description}</td>
                   <td>
                     <PriceHightLight variant={transaction.type}>
-                      {transaction.price}
+                      {transaction.type === "outcome" && "- "}
+                      {priceFormatter.format(transaction.price)}
                     </PriceHightLight>
                   </td>
                   <td>{transaction.category}</td>
-                  <td>{transaction.createdAt}</td>
+                  <td>
+                    {dateFormatter.format(new Date(transaction.createdAt))}
+                  </td>
                 </tr>
               );
             })}
