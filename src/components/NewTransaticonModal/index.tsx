@@ -10,6 +10,9 @@ import {
 import * as z from "zod";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { api } from "../../lib/axios";
+import { TransactionContext } from "../../contexts/TransactionContext";
+import { useContext } from "react";
 
 const newTransactionSchema = z.object({
   description: z.string(),
@@ -21,18 +24,26 @@ const newTransactionSchema = z.object({
 type NewTransactionFormInputs = z.infer<typeof newTransactionSchema>;
 
 export default function NewTransactionModal() {
+  const { createTransaction } = useContext(TransactionContext);
   const {
     register,
     handleSubmit,
     control,
+    reset,
     formState: { isSubmitting },
   } = useForm<NewTransactionFormInputs>({
     resolver: zodResolver(newTransactionSchema),
   });
 
   async function handleCreateNewTransaction(data: NewTransactionFormInputs) {
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-    console.log(data);
+    const { description, category, price, type } = data;
+    await createTransaction({
+      description,
+      category,
+      price,
+      type,
+    });
+    reset();
   }
 
   return (
